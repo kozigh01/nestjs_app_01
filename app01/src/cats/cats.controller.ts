@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Header, Query, Redirect, Param, Body, HttpException, HttpStatus, ForbiddenException, UseFilters } from "@nestjs/common";
+import { Controller, Get, Post, Header, Query, Redirect, Param, Body, HttpException, HttpStatus, ForbiddenException, UseFilters, UsePipes, ParseIntPipe } from "@nestjs/common";
 import { Observable, of } from "rxjs";
 import { CreateCatDto } from "./dto/create-cat.dto";
 import { CatsService } from "./cats.service";
 import { Cat } from "./interfaces/cat.interfaces";
 import { MyForbiddenException } from "src/exceptions/forbidden.exception";
 import { HttpExceptionFilter } from "src/exceptions/http-exception.filter";
+import Joi = require("@hapi/joi");
+import { MyParseIntPipe } from "src/pipes/parse-int.pipe";
 
 @Controller('cats')
 @UseFilters(HttpExceptionFilter)  // controller scoped exception filter
@@ -42,6 +44,7 @@ export class CatsController {
     }
 
     @Post()
+    // @UsePipes(new JoiValidationPipe(CatsController.createCatSchema))
     create(@Body() createCatDto: CreateCatDto): Cat {
         this.catsService.create(createCatDto);
         return createCatDto;
@@ -62,7 +65,7 @@ export class CatsController {
     }
     
     @Get('/alt/:id')
-    findOneAlt(@Param('id') id): string {
+    findOneAlt(@Param('id', new MyParseIntPipe()) id): string {
         console.log(id);
         return `This action returns a #${id} cat`;
     }

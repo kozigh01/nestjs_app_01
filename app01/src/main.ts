@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  app.useGlobalFilters(new AllExceptionsFilter()); // Global scoped exception filter
+  // app.useGlobalFilters(new AllExceptionsFilter()); // Global scoped exception filter
 
   await app.listen(3000);
 }

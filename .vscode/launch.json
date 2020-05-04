@@ -6,15 +6,13 @@
   "configurations": [
     {
       "type": "node",
-      "request": "launch",
-      "name": "Launch Program",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "program": "${workspaceFolder}\\app01\\src\\pipes\\joi-validation.pipe.ts",
-      "outFiles": [
-        "${workspaceFolder}/**/*.js"
-      ]
-    }
+      "request": "attach",
+      "protocol": "inspector",
+      "name": "API",
+      "port": 9229,
+      "sourceMaps": true,
+      "trace": true,
+      "cwd": "${workspaceFolder}/app01"
+   }
   ]
 }
