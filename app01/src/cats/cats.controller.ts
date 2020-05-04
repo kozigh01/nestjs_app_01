@@ -1,9 +1,13 @@
 import { Controller, Get, Post, Header, Query, Redirect, Param, Body } from "@nestjs/common";
 import { Observable, of } from "rxjs";
-import { CreateCatDto } from "./create-cat.dto";
+import { CreateCatDto } from "./dto/create-cat.dto";
+import { CatsService } from "./cats.service";
+import { Cat } from "./interfaces/cat.interfaces";
 
 @Controller('cats')
 export class CatsController {
+    constructor(private catsService: CatsService) {}
+
     @Get('async')
     findAllAsync(): Observable<any[]> {
         return of(['one', 'two']);
@@ -16,13 +20,14 @@ export class CatsController {
 
     @Get()
     @Header('Test-Header', 'testing')
-    findAll(): string {
-        return 'This action returns all cats';
+    findAll(): Cat[] {
+        return this.catsService.findAll();
     }
 
     @Post()
-    create(@Body() createCatDto: CreateCatDto): string {
-        return 'This action adds a new cat';
+    create(@Body() createCatDto: CreateCatDto): Cat {
+        this.catsService.create(createCatDto);
+        return createCatDto;
     }
 
     @Get('docs')
