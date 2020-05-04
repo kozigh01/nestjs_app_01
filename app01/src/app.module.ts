@@ -7,6 +7,7 @@ import { CatsController } from './cats/cats.controller';
 
 function logger(req: Request, res: Response, next: Function) {
   console.log('Functional Middleware Logger: request...');
+  next();
 }
 
 @Module({

@@ -1,10 +1,13 @@
-import { Controller, Get, Post, Header, Query, Redirect, Param, Body } from "@nestjs/common";
+import { Controller, Get, Post, Header, Query, Redirect, Param, Body, HttpException, HttpStatus, ForbiddenException, UseFilters } from "@nestjs/common";
 import { Observable, of } from "rxjs";
 import { CreateCatDto } from "./dto/create-cat.dto";
 import { CatsService } from "./cats.service";
 import { Cat } from "./interfaces/cat.interfaces";
+import { MyForbiddenException } from "src/exceptions/forbidden.exception";
+import { HttpExceptionFilter } from "src/exceptions/http-exception.filter";
 
 @Controller('cats')
+@UseFilters(HttpExceptionFilter)  // controller scoped exception filter
 export class CatsController {
     constructor(private catsService: CatsService) {}
 
@@ -20,7 +23,21 @@ export class CatsController {
 
     @Get()
     @Header('Test-Header', 'testing')
+    @UseFilters(HttpExceptionFilter)  // function scoped exception filter
+    // @UseFilters(new HttpExceptionFilter())
     findAll(): Cat[] {
+        throw new MyForbiddenException();
+        // throw new Error('helllppp!');
+        // throw new HttpException('Testing', HttpStatus.I_AM_A_TEAPOT);
+        // throw new HttpException(
+        //     {
+        //         prop1: 'somehting goes here',
+        //         error: "I'm an error",
+        //         status: HttpStatus.NO_CONTENT
+        //     },
+        //     HttpStatus.NOT_FOUND
+        // );
+
         return this.catsService.findAll();
     }
 
