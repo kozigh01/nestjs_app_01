@@ -1,15 +1,17 @@
-import { Controller, Get, Post, Header, Query, Redirect, Param, Body, HttpException, HttpStatus, ForbiddenException, UseFilters, UsePipes, ParseIntPipe } from "@nestjs/common";
+import { Controller, Get, Post, Header, Query, Redirect, Param, Body, UseFilters, UseGuards, SetMetadata } from "@nestjs/common";
 import { Observable, of } from "rxjs";
 import { CreateCatDto } from "./dto/create-cat.dto";
 import { CatsService } from "./cats.service";
 import { Cat } from "./interfaces/cat.interfaces";
 import { MyForbiddenException } from "src/exceptions/forbidden.exception";
 import { HttpExceptionFilter } from "src/exceptions/http-exception.filter";
-import Joi = require("@hapi/joi");
 import { MyParseIntPipe } from "src/pipes/parse-int.pipe";
+import { RolesGuard } from "src/guards/roles.guard";
+import { Roles } from "src/decorators/roles.decorator";
 
 @Controller('cats')
 @UseFilters(HttpExceptionFilter)  // controller scoped exception filter
+@UseGuards(RolesGuard)
 export class CatsController {
     constructor(private catsService: CatsService) {}
 
@@ -45,6 +47,8 @@ export class CatsController {
 
     @Post()
     // @UsePipes(new JoiValidationPipe(CatsController.createCatSchema))
+    // @SetMetadata('roles', ['admin']) // use a custom decorator instead
+    @Roles('admin')
     create(@Body() createCatDto: CreateCatDto): Cat {
         this.catsService.create(createCatDto);
         return createCatDto;
